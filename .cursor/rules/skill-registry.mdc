@@ -1,0 +1,50 @@
+---
+description: Skill 注册表 — 22 个技能的触发词和路径映射
+alwaysApply: true
+---
+
+# Skill Registry
+
+根据用户意图匹配对应 Skill，读取其 SKILL.md 执行。路径相对于项目根目录。
+
+## 开发效率（10）
+
+| 触发意图 | Skill | 路径 |
+|---------|-------|------|
+| 提交代码、commit | git-commit-standard | `generated-skills/git-commit-standard/` |
+| 审查代码、review | code-review-assistant | `generated-skills/code-review-assistant/` |
+| 写测试、补测试 | test-generator | `generated-skills/test-generator/` |
+| 报错、调试 | error-diagnostics | `generated-skills/error-diagnostics/` |
+| 查 API、查文档 | api-doc-lookup | `generated-skills/api-doc-lookup/` |
+| SQL、数据库 | sql-assistant | `generated-skills/sql-assistant/` |
+| 重构、拆函数 | refactor-helper | `generated-skills/refactor-helper/` |
+| 生成文档、README | doc-generator | `generated-skills/doc-generator/` |
+| Docker、CI/CD、配置 | env-config-template | `generated-skills/env-config-template/` |
+| 国际化、多语言 | i18n-helper | `generated-skills/i18n-helper/` |
+
+## 架构能力（3）
+
+| 触发意图 | Skill | 路径 |
+|---------|-------|------|
+| 架构设计、技术选型 | system-design-advisor | `generated-skills/system-design-advisor/` |
+| 性能优化、慢、卡 | performance-optimizer | `generated-skills/performance-optimizer/` |
+| 安全检查、漏洞 | security-checker | `generated-skills/security-checker/` |
+
+## 产品能力（8）
+
+| 触发意图 | Skill | 路径 |
+|---------|-------|------|
+| 写 PRD、需求文档 | prd-writer | `generated-skills/prd-writer/` |
+| 拆用户故事、拆需求 | story-breakdown | `generated-skills/story-breakdown/` |
+| 原型规格说明 | prototype-spec | `generated-skills/prototype-spec/` |
+| 画原型、mockup | prototype-builder | `generated-skills/prototype-builder/` |
+| 数据分析、看数据 | data-insight | `generated-skills/data-insight/` |
+| 竞品分析 | competitive-analysis | `generated-skills/competitive-analysis/` |
+| 发版记录、changelog | release-notes | `generated-skills/release-notes/` |
+| 会议纪要 | meeting-notes | `generated-skills/meeting-notes/` |
+
+## 使用规则
+
+- 匹配到 Skill 后必须先读取其 `SKILL.md`，再按其步骤执行
+- 有 `references/` 或 `assets/` 目录的，加载其中内容作为参考
+- 一个任务可以匹配多个 Skill，按 orchestrator 规则编排执行顺序

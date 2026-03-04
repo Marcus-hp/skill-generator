@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户管理 - 后台原型</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8' },
+            sidebar: '#1e293b',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .fade-in { animation: fadeIn 0.2s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .sidebar-item:hover { background: rgba(255,255,255,0.08); }
+    .sidebar-item.active { background: rgba(59,130,246,0.2); border-right: 3px solid #3b82f6; }
+    .table-row:hover { background: #f8fafc; }
+    .btn-hover:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .checkbox { appearance: none; width: 16px; height: 16px; border: 2px solid #cbd5e1; border-radius: 4px; cursor: pointer; position: relative; }
+    .checkbox:checked { background: #3b82f6; border-color: #3b82f6; }
+    .checkbox:checked::after { content: '✓'; color: white; font-size: 11px; position: absolute; top: -1px; left: 2px; }
+    .toast { position: fixed; top: 20px; right: 20px; z-index: 1000; transform: translateX(120%); transition: transform 0.3s ease; }
+    .toast.show { transform: translateX(0); }
+  </style>
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-60 bg-sidebar text-gray-300 flex flex-col flex-shrink-0">
+    <div class="h-16 flex items-center px-5 border-b border-gray-700">
+      <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">A</div>
+      <span class="ml-3 text-white font-semibold text-lg">Admin Pro</span>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <div class="px-4 mb-2 text-xs text-gray-500 uppercase tracking-wider">主菜单</div>
+      <a href="#" class="sidebar-item flex items-center px-5 py-2.5 text-sm">
+        <svg class="w-5 h-5 mr-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        仪表盘
+      </a>
+      <a href="#" class="sidebar-item active flex items-center px-5 py-2.5 text-sm text-white">
+        <svg class="w-5 h-5 mr-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        用户管理
+      </a>
+      <a href="#" class="sidebar-item flex items-center px-5 py-2.5 text-sm">
+        <svg class="w-5 h-5 mr-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        订单管理
+      </a>
+      <a href="#" class="sidebar-item flex items-center px-5 py-2.5 text-sm">
+        <svg class="w-5 h-5 mr-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        商品管理
+      </a>
+      <a href="#" class="sidebar-item flex items-center px-5 py-2.5 text-sm">
+        <svg class="w-5 h-5 mr-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        数据报表
+      </a>
+      <div class="px-4 mt-6 mb-2 text-xs text-gray-500 uppercase tracking-wider">系统</div>
+      <a href="#" class="sidebar-item flex items-center px-5 py-2.5 text-sm">
+        <svg class="w-5 h-5 mr-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        系统设置
+      </a>
+    </nav>
+    <div class="p-4 border-t border-gray-700">
+      <div class="flex items-center">
+        <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-xs font-medium">M</div>
+        <div class="ml-3">
+          <div class="text-sm text-white">Marcus</div>
+          <div class="text-xs text-gray-500">超级管理员</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Bar -->
+    <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
+      <div>
+        <h1 class="text-lg font-semibold text-gray-800">用户管理</h1>
+        <p class="text-xs text-gray-400">管理系统中的所有注册用户</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <div class="text-sm text-gray-500">总用户数</div>
+          <div class="text-2xl font-bold text-gray-800 mt-1">12,846</div>
+          <div class="text-xs text-green-500 mt-1">↑ 12.5% 较上月</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <div class="text-sm text-gray-500">活跃用户</div>
+          <div class="text-2xl font-bold text-gray-800 mt-1">8,234</div>
+          <div class="text-xs text-green-500 mt-1">↑ 8.2% 较上月</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <div class="text-sm text-gray-500">今日新增</div>
+          <div class="text-2xl font-bold text-gray-800 mt-1">156</div>
+          <div class="text-xs text-red-500 mt-1">↓ 3.1% 较昨日</div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+          <div class="text-sm text-gray-500">付费用户</div>
+          <div class="text-2xl font-bold text-gray-800 mt-1">3,421</div>
+          <div class="text-xs text-green-500 mt-1">↑ 5.7% 较上月</div>
+        </div>
+      </div>
+
+      <!-- Filter & Actions Bar -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm mb-6">
+        <div class="p-4 flex items-center justify-between border-b border-gray-100">
+          <div class="flex items-center space-x-3">
+            <!-- Search -->
+            <div class="relative">
+              <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input id="searchInput" type="text" placeholder="搜索用户名、邮箱、手机号..." class="pl-9 pr-4 py-2 w-72 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition" oninput="filterTable()">
+            </div>
+            <!-- Status Filter -->
+            <select id="statusFilter" class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500" onchange="filterTable()">
+              <option value="">全部状态</option>
+              <option value="active">正常</option>
+              <option value="inactive">已禁用</option>
+              <option value="pending">待审核</option>
+            </select>
+            <!-- Role Filter -->
+            <select id="roleFilter" class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500" onchange="filterTable()">
+              <option value="">全部角色</option>
+              <option value="admin">管理员</option>
+              <option value="user">普通用户</option>
+              <option value="vip">VIP 用户</option>
+            </select>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="exportData()" class="btn-hover px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition flex items-center">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              导出
+            </button>
+            <button onclick="openModal()" class="btn-hover px-4 py-2 bg-primary-500 text-white rounded-lg text-sm hover:bg-primary-600 transition flex items-center">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              添加用户
+            </button>
+          </div>
+        </div>
+
+        <!-- Batch Actions (hidden by default) -->
+        <div id="batchBar" class="px-4 py-2.5 bg-primary-50 border-b border-primary-100 hidden fade-in">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-primary-700">已选择 <strong id="selectedCount">0</strong> 项</span>
+            <div class="flex items-center space-x-2">
+              <button onclick="batchAction('enable')" class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition">批量启用</button>
+              <button onclick="batchAction('disable')" class="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition">批量禁用</button>
+              <button onclick="batchAction('delete')" class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition">批量删除</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 text-left">
+                <th class="px-4 py-3 w-10"><input type="checkbox" class="checkbox" onchange="toggleAll(this)"></th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">用户信息</th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">注册时间</th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">最后登录</th>
+                <th class="px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-gray-100">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+          <div class="text-sm text-gray-500">共 <strong>86</strong> 条记录，每页 <select class="border border-gray-200 rounded px-1 py-0.5 text-sm"><option>10</option><option>20</option><option>50</option></select> 条</div>
+          <div class="flex items-center space-x-1">
+            <button class="px-3 py-1.5 text-sm text-gray-400 bg-gray-50 rounded border border-gray-200 cursor-not-allowed">上一页</button>
+            <button class="px-3 py-1.5 text-sm text-white bg-primary-500 rounded border border-primary-500">1</button>
+            <button class="px-3 py-1.5 text-sm text-gray-600 bg-white rounded border border-gray-200 hover:bg-gray-50 transition">2</button>
+            <button class="px-3 py-1.5 text-sm text-gray-600 bg-white rounded border border-gray-200 hover:bg-gray-50 transition">3</button>
+            <span class="px-2 text-gray-400">...</span>
+            <button class="px-3 py-1.5 text-sm text-gray-600 bg-white rounded border border-gray-200 hover:bg-gray-50 transition">9</button>
+            <button class="px-3 py-1.5 text-sm text-gray-600 bg-white rounded border border-gray-200 hover:bg-gray-50 transition">下一页</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add User Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] bg-white rounded-2xl shadow-2xl fade-in">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <h3 class="text-lg font-semibold text-gray-800">添加用户</h3>
+        <button onclick="closeModal()" class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">用户名 <span class="text-red-500">*</span></label>
+          <input type="text" placeholder="请输入用户名" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱 <span class="text-red-500">*</span></label>
+          <input type="email" placeholder="请输入邮箱地址" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+          <input type="tel" placeholder="请输入手机号" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">角色</label>
+          <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option>普通用户</option>
+            <option>VIP 用户</option>
+            <option>管理员</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">初始密码 <span class="text-red-500">*</span></label>
+          <input type="password" placeholder="请设置初始密码" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 p-5 border-t border-gray-100">
+        <button onclick="closeModal()" class="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">取消</button>
+        <button onclick="submitUser()" class="px-4 py-2 text-sm text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeDeleteModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] bg-white rounded-2xl shadow-2xl fade-in p-6 text-center">
+      <div class="w-12 h-12 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-800 mb-1">确认删除</h3>
+      <p class="text-sm text-gray-500 mb-6">删除后无法恢复，确认要删除该用户吗？</p>
+      <div class="flex items-center justify-center gap-3">
+        <button onclick="closeDeleteModal()" class="px-5 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition">取消</button>
+        <button onclick="confirmDelete()" class="px-5 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition">确认删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <div class="flex items-center gap-2 px-4 py-3 bg-white rounded-lg shadow-lg border border-gray-100">
+      <span id="toastIcon"></span>
+      <span id="toastMsg" class="text-sm text-gray-700"></span>
+    </div>
+  </div>
+
+  <script>
+    const users = [
+      { id:1, name:'张明远', email:'zhangmy@example.com', phone:'138****1234', avatar:'Z', role:'admin', roleLabel:'管理员', status:'active', statusLabel:'正常', regDate:'2024-08-15', lastLogin:'2 小时前', color:'bg-blue-500' },
+      { id:2, name:'李思琪', email:'lisq@example.com', phone:'139****5678', avatar:'L', role:'vip', roleLabel:'VIP 用户', status:'active', statusLabel:'正常', regDate:'2024-09-22', lastLogin:'30 分钟前', color:'bg-purple-500' },
+      { id:3, name:'王浩然', email:'wanghr@example.com', phone:'136****9012', avatar:'W', role:'user', roleLabel:'普通用户', status:'inactive', statusLabel:'已禁用', regDate:'2024-10-05', lastLogin:'3 天前', color:'bg-green-500' },
+      { id:4, name:'陈语桐', email:'chenyt@example.com', phone:'137****3456', avatar:'C', role:'user', roleLabel:'普通用户', status:'pending', statusLabel:'待审核', regDate:'2025-01-18', lastLogin:'从未登录', color:'bg-orange-500' },
+      { id:5, name:'赵雨萱', email:'zhaoyx@example.com', phone:'135****7890', avatar:'赵', role:'vip', roleLabel:'VIP 用户', status:'active', statusLabel:'正常', regDate:'2024-11-30', lastLogin:'1 小时前', color:'bg-pink-500' },
+      { id:6, name:'刘子墨', email:'liuzm@example.com', phone:'158****2345', avatar:'刘', role:'user', roleLabel:'普通用户', status:'active', statusLabel:'正常', regDate:'2025-02-14', lastLogin:'昨天', color:'bg-teal-500' },
+      { id:7, name:'孙晨曦', email:'suncx@example.com', phone:'186****6789', avatar:'S', role:'admin', roleLabel:'管理员', status:'active', statusLabel:'正常', regDate:'2024-06-01', lastLogin:'5 分钟前', color:'bg-indigo-500' },
+      { id:8, name:'周梓涵', email:'zhouzh@example.com', phone:'133****0123', avatar:'周', role:'user', roleLabel:'普通用户', status:'inactive', statusLabel:'已禁用', regDate:'2024-12-20', lastLogin:'2 周前', color:'bg-red-400' },
+    ];
+
+    const statusStyles = {
+      active: 'bg-green-100 text-green-700',
+      inactive: 'bg-gray-100 text-gray-500',
+      pending: 'bg-yellow-100 text-yellow-700',
+    };
+
+    const roleStyles = {
+      admin: 'bg-blue-100 text-blue-700',
+      vip: 'bg-purple-100 text-purple-700',
+      user: 'bg-gray-100 text-gray-600',
+    };
+
+    let selectedIds = new Set();
+
+    function renderTable(data) {
+      const tbody = document.getElementById('tableBody');
+      if (data.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="7" class="py-16 text-center">
+            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+            <p class="text-gray-400 text-sm">没有找到匹配的用户</p>
+            <p class="text-gray-300 text-xs mt-1">尝试修改筛选条件</p>
+          </td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map(u => `
+        <tr class="table-row transition">
+          <td class="px-4 py-3"><input type="checkbox" class="checkbox" data-id="${u.id}" ${selectedIds.has(u.id)?'checked':''} onchange="toggleSelect(${u.id}, this.checked)"></td>
+          <td class="px-4 py-3">
+            <div class="flex items-center">
+              <div class="w-9 h-9 ${u.color} rounded-full flex items-center justify-center text-white text-xs font-medium flex-shrink-0">${u.avatar}</div>
+              <div class="ml-3">
+                <div class="text-sm font-medium text-gray-800">${u.name}</div>
+                <div class="text-xs text-gray-400">${u.email} · ${u.phone}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${roleStyles[u.role]}">${u.roleLabel}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusStyles[u.status]}">${u.statusLabel}</span></td>
+          <td class="px-4 py-3 text-sm text-gray-500">${u.regDate}</td>
+          <td class="px-4 py-3 text-sm text-gray-500">${u.lastLogin}</td>
+          <td class="px-4 py-3 text-right">
+            <div class="flex items-center justify-end space-x-1">
+              <button onclick="showToast('info','编辑功能演示')" class="p-1.5 text-gray-400 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition" title="编辑">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="showToast('info','${u.status==='active'?'已禁用':'已启用'} ${u.name}')" class="p-1.5 text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 rounded-lg transition" title="${u.status==='active'?'禁用':'启用'}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              </button>
+              <button onclick="openDeleteModal()" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="删除">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const role = document.getElementById('roleFilter').value;
+      const filtered = users.filter(u => {
+        const matchQ = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.phone.includes(q);
+        const matchS = !status || u.status === status;
+        const matchR = !role || u.role === role;
+        return matchQ && matchS && matchR;
+      });
+      renderTable(filtered);
+    }
+
+    function toggleAll(el) {
+      const checkboxes = document.querySelectorAll('#tableBody .checkbox');
+      checkboxes.forEach(cb => { cb.checked = el.checked; toggleSelect(parseInt(cb.dataset.id), el.checked); });
+    }
+
+    function toggleSelect(id, checked) {
+      if (checked) selectedIds.add(id); else selectedIds.delete(id);
+      const bar = document.getElementById('batchBar');
+      const count = document.getElementById('selectedCount');
+      if (selectedIds.size > 0) { bar.classList.remove('hidden'); count.textContent = selectedIds.size; }
+      else { bar.classList.add('hidden'); }
+    }
+
+    function batchAction(action) {
+      const labels = { enable:'批量启用', disable:'批量禁用', delete:'批量删除' };
+      showToast('success', `${labels[action]}了 ${selectedIds.size} 个用户`);
+      selectedIds.clear();
+      document.getElementById('batchBar').classList.add('hidden');
+      document.querySelectorAll('.checkbox').forEach(cb => cb.checked = false);
+    }
+
+    function openModal() { document.getElementById('modal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+    function openDeleteModal() { document.getElementById('deleteModal').classList.remove('hidden'); }
+    function closeDeleteModal() { document.getElementById('deleteModal').classList.add('hidden'); }
+    function confirmDelete() { closeDeleteModal(); showToast('success', '用户已删除'); }
+    function submitUser() { closeModal(); showToast('success', '用户添加成功'); }
+    function exportData() { showToast('success', '数据导出中，请稍候...'); }
+
+    function showToast(type, msg) {
+      const icons = { success:'✅', info:'ℹ️', error:'❌' };
+      document.getElementById('toastIcon').textContent = icons[type] || 'ℹ️';
+      document.getElementById('toastMsg').textContent = msg;
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    renderTable(users);
+  </script>
+</body>
+</html>

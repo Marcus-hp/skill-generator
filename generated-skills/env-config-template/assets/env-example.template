@@ -1,0 +1,50 @@
+# ===================================
+# Application
+# ===================================
+APP_NAME=my-app
+APP_ENV=development          # development | staging | production
+APP_PORT=3000
+APP_SECRET=                  # [REQUIRED] Generate: openssl rand -hex 32
+
+# ===================================
+# Database
+# ===================================
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=                 # [REQUIRED] Set your database password
+DB_NAME=appdb
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+
+# ===================================
+# Redis
+# ===================================
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=              # [REQUIRED] Set your Redis password
+REDIS_URL=redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}/0
+
+# ===================================
+# Authentication
+# ===================================
+JWT_SECRET=                  # [REQUIRED] Generate: openssl rand -hex 64
+JWT_EXPIRES_IN=7d
+
+# ===================================
+# Third-party Services
+# ===================================
+# SMTP_HOST=smtp.example.com
+# SMTP_PORT=587
+# SMTP_USER=
+# SMTP_PASSWORD=
+
+# SENTRY_DSN=
+# STRIPE_SECRET_KEY=
+# AWS_ACCESS_KEY_ID=
+# AWS_SECRET_ACCESS_KEY=
+# AWS_REGION=ap-northeast-1
+
+# ===================================
+# Logging
+# ===================================
+LOG_LEVEL=debug              # debug | info | warn | error

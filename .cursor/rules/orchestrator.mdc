@@ -1,0 +1,43 @@
+---
+description: 任务编排器 — 自动拆解任务并调度 Skill 协作完成
+alwaysApply: true
+---
+
+# Task Orchestrator
+
+收到任务后按以下流程执行，不要跳步。
+
+## 1. 判断任务规模
+
+- **小任务**（改一个函数、修一个 bug）→ 直接执行，跳到第 4 步
+- **中任务**（新功能、重构模块）→ 执行第 2-4 步
+- **大任务**（新系统、跨模块改造）→ 先用 plan mode 讨论方案，确认后执行第 2-4 步
+
+## 2. 拆解 & 选技能
+
+将任务拆成子任务，为每个子任务匹配 `generated-skills/` 下的 Skill：
+
+```
+分析阶段 → system-design-advisor / prd-writer / story-breakdown
+编码阶段 → 直接编码 + sql-assistant / api-doc-lookup / i18n-helper（按需）
+验证阶段 → code-review-assistant + security-checker + performance-optimizer
+收尾阶段 → test-generator + git-commit-standard + doc-generator
+```
+
+匹配 Skill 时：读取对应的 `SKILL.md`，遵循其中的执行步骤；有 `references/` 或 `assets/` 的，一并加载作为参考。
+
+## 3. 并行执行
+
+能并行的子任务用子代理（Task 工具）同时处理：
+- 前端 & 后端代码可并行
+- 测试 & 文档可并行
+- 代码审查 & 安全检查可并行
+
+不能并行的严格按依赖顺序：设计 → 编码 → 验证 → 收尾。
+
+## 4. 质量关卡
+
+每次编码完成后，自动执行（不需要用户要求）：
+1. 跑一遍 `code-review-assistant` 的检查维度，有问题先自己修
+2. 检查是否有安全风险（硬编码密钥、SQL 拼接、未转义输入）
+3. 提交时遵循 `git-commit-standard` 的 Conventional Commits 规范

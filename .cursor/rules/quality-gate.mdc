@@ -1,0 +1,36 @@
+---
+description: 质量关卡 — 编码完成后自动执行的检查流程
+alwaysApply: true
+---
+
+# Quality Gate
+
+以下检查在每次编码任务完成后**自动执行**，不需要用户主动要求。
+
+## 编码后自检（每次）
+
+1. **基础检查**：确认没有引入 linter 错误
+2. **安全速查**：扫描本次改动是否包含硬编码密钥、SQL 拼接、未转义输入
+3. **敏感文件**：确认 `.env`、credentials、私钥等不在提交范围内
+
+## 提交前（用户说"提交"时）
+
+1. 运行 `git diff --staged` 分析变更
+2. 按 Conventional Commits 生成 commit message
+3. 展示给用户确认后再执行 `git commit`
+4. 提交后提示是否需要 push，不自动 push
+
+## 大功能完成后（用户说"做完了"/"上线"/"检查一下"时）
+
+自动触发完整审查，合并输出一份报告：
+- code-review-assistant：代码质量
+- security-checker：安全漏洞
+- performance-optimizer：性能瓶颈
+
+报告格式：
+```
+## 综合审查报告
+### 🔴 必须修复（N 项）
+### 🟡 建议修复（N 项）
+### 🟢 已达标（N 项）
+```
