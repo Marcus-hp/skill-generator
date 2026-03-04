@@ -70,7 +70,11 @@ skill-generator/
 │   └── skill_validator.py      ✅ 配置验证机制
 ├── references/
 │   ├── skill-format.md         Skill 标准格式规范
-│   └── templates.md            各类型技能预设模板（增强版）
+│   ├── templates.md            各类型技能预设模板（增强版）
+│   ├── error-handling.md       错误处理规范
+│   ├── preview-and-edit.md     技能预览和实时编辑规范
+│   ├── skill-update-guide.md   技能更新管理规范
+│   └── validation-rules.md     配置验证机制规范
 ├── assets/
 │   └── skill-structure-example.md  完整技能包示例
 └── evals/

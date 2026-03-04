@@ -16,14 +16,14 @@ from datetime import datetime
 
 class UserInputError(Exception):
     """用户输入错误"""
-    def __init__(self, message: str, suggestions: List[str] = None):
+    def __init__(self, message: str, suggestions: Optional[List[str]] = None):
         super().__init__(message)
         self.suggestions = suggestions or []
 
 
 class SkillValidationError(Exception):
     """技能验证错误"""
-    def __init__(self, message: str, field: str = None, fix_suggestion: str = None):
+    def __init__(self, message: str, field: Optional[str] = None, fix_suggestion: Optional[str] = None):
         super().__init__(message)
         self.field = field
         self.fix_suggestion = fix_suggestion
@@ -168,7 +168,7 @@ class ErrorHandler:
             return False, f"路径格式错误：{str(e)}"
     
     def format_error_message(self, error_type: str, details: str, 
-                           suggestions: List[str] = None) -> str:
+                           suggestions: Optional[List[str]] = None) -> str:
         """
         格式化错误消息
         
@@ -217,7 +217,7 @@ class ErrorHandler:
         
         return common_options + specific_options.get(error_type, [])
     
-    def create_error_report(self, error: Exception, context: Dict[str, Any] = None) -> Dict[str, Any]:
+    def create_error_report(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         创建错误报告
         
@@ -237,7 +237,7 @@ class ErrorHandler:
             'suggestions': self.get_recovery_options(type(error).__name__.lower())
         }
     
-    def handle_user_input_error(self, user_input: str, valid_options: List[str] = None) -> str:
+    def handle_user_input_error(self, user_input: str, valid_options: Optional[List[str]] = None) -> str:
         """
         处理用户输入错误
         
@@ -265,7 +265,7 @@ class ErrorHandler:
                 ["尝试用更简单的表达", "查看可用选项", "说'帮助'获取指导"]
             )
     
-    def _generate_help_message(self, valid_options: List[str] = None) -> str:
+    def _generate_help_message(self, valid_options: Optional[List[str]] = None) -> str:
         """
         生成帮助消息
         

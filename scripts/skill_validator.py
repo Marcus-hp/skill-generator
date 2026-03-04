@@ -8,7 +8,7 @@ skill_validator.py
 
 import json
 import jsonschema
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Callable, Dict, Any, List, Tuple, Optional
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -166,7 +166,7 @@ class SkillValidator:
             "additionalProperties": False
         }
     
-    def _init_custom_validators(self) -> Dict[str, callable]:
+    def _init_custom_validators(self) -> Dict[str, Callable[..., Tuple[List[str], List[str], List[str]]]]:
         """初始化自定义验证器"""
         return {
             'description_quality': self._validate_description_quality,

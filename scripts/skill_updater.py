@@ -39,11 +39,14 @@ class SkillVersion:
 class SkillUpdater:
     """技能更新器"""
     
-    def __init__(self, skills_dir: str = ".claude/skills"):
+    def __init__(self, skills_dir: Optional[str] = None):
+        if skills_dir is None:
+            project_root = Path(os.environ.get("SKILL_DATA_DIR", "."))
+            skills_dir = str(project_root / ".claude" / "skills")
         self.skills_dir = Path(skills_dir)
         self.backup_dir = self.skills_dir / ".backups"
-        self.backup_dir.mkdir(exist_ok=True)
-        self.change_history = []
+        self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self.change_history: List[SkillChange] = []
     
     def list_existing_skills(self) -> List[Dict[str, Any]]:
         """
@@ -555,7 +558,7 @@ class SkillUpdater:
             print(f"创建备份失败：{e}")
             return False
     
-    def _record_changes(self, skill_name: str, changes: List[SkillChange]):
+    def _record_changes(self, skill_name: str, changes: List[SkillChange]) -> None:
         """记录变更历史"""
         history_file = self.backup_dir / f"{skill_name}_history.json"
         
@@ -586,7 +589,7 @@ class SkillUpdater:
         except Exception as e:
             print(f"记录变更失败：{e}")
     
-    def _update_skill_name_in_files(self, skill_dir: Path, new_name: str):
+    def _update_skill_name_in_files(self, skill_dir: Path, new_name: str) -> None:
         """更新文件中的技能名称"""
         try:
             skill_file = skill_dir / "SKILL.md"

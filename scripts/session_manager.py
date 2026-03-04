@@ -9,7 +9,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, asdict
 
 
@@ -36,7 +36,10 @@ class SkillCreationSession:
 class SessionManager:
     """会话管理器"""
     
-    def __init__(self, session_dir: str = ".claude/skills/sessions"):
+    def __init__(self, session_dir: Optional[str] = None):
+        if session_dir is None:
+            project_root = Path(os.environ.get("SKILL_DATA_DIR", "."))
+            session_dir = str(project_root / ".claude" / "skills" / "sessions")
         self.session_dir = Path(session_dir)
         self.session_dir.mkdir(parents=True, exist_ok=True)
         self.current_session: Optional[SkillCreationSession] = None
@@ -111,7 +114,7 @@ class SessionManager:
             print(f"加载会话失败: {e}")
             return None
     
-    def list_sessions(self) -> list[Dict[str, Any]]:
+    def list_sessions(self) -> List[Dict[str, Any]]:
         """
         列出所有会话
         

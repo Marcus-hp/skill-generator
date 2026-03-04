@@ -349,7 +349,14 @@ class IntelligentRecommender:
             str: 生成的描述
         """
         if category not in self.templates:
-            category = 'file'
+            category_mapping = {
+                'file': 'file_processing',
+                'data': 'data_analysis',
+                'code': 'code_assistant',
+                'research': 'research',
+                'automation': 'automation'
+            }
+            category = category_mapping.get(category, 'file_processing')
         
         template = self.templates[category]
         keywords = self.recommend_keywords(category, user_description)
