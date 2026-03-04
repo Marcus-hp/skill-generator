@@ -1,0 +1,38 @@
+{
+  "skill_name": "skill-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我创建一个新的 Skill，用于生成 Word 文档",
+      "expected_output": "向导启动，通过问答引导用户完成 Word 文档生成技能包的创建",
+      "files": [],
+      "expectations": [
+        "向导显示了开场问候和步骤提示",
+        "提供了技能类型选择题",
+        "最终生成了包含 SKILL.md 的完整文件包"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我想做一个数据分析的 skill",
+      "expected_output": "向导识别出数据分析类型，推荐合适的技能名称，并引导完成配置",
+      "files": [],
+      "expectations": [
+        "向导被触发并开始对话",
+        "推荐了数据分析相关的技能名称",
+        "description 包含了数据分析的触发关键词"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "新建一个 skill 帮我自动发邮件",
+      "expected_output": "向导启动，识别为流程自动化类，引导完成邮件发送技能包",
+      "files": [],
+      "expectations": [
+        "向导正确触发",
+        "提供了步骤选择题而非一次性问所有问题",
+        "生成的 SKILL.md 格式符合标准规范"
+      ]
+    }
+  ]
+}

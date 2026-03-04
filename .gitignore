@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+test_output/
+*.egg-info/
+dist/
+build/
+.claude/skills/sessions/
+.claude/skills/.backups/
+.venv/
+.env
