@@ -7,7 +7,7 @@ alwaysApply: true
 
 根据用户意图匹配对应 Skill，读取其 SKILL.md 执行。路径相对于项目根目录。
 
-## 开发效率（10）
+## 开发效率（11）
 
 | 触发意图 | Skill | 路径 |
 |---------|-------|------|
@@ -21,6 +21,7 @@ alwaysApply: true
 | 生成文档、README | doc-generator | `generated-skills/doc-generator/` |
 | Docker、CI/CD、配置 | env-config-template | `generated-skills/env-config-template/` |
 | 国际化、多语言 | i18n-helper | `generated-skills/i18n-helper/` |
+| 循环重试、做到通过 | auto-retry-loop | `generated-skills/auto-retry-loop/` |
 
 ## 架构能力（3）
 
